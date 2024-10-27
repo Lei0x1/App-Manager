@@ -8,28 +8,65 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Enable position-independent code for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-# Set the prefix path for Qt and Vulkan
-set(CMAKE_PREFIX_PATH "C:/Qt/6.8.0/mingw_64;C:/VulkanSDK/1.3.296.0")
-
 # Default to Release if no build type is specified
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 endif()
 
-# Find Qt6
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+# Determine platform-specific settings
+if(WIN32)
+    # Windows-specific settings
+    set(CMAKE_PREFIX_PATH "C:/Qt/6.8.0/mingw_64;C:/VulkanSDK/1.3.296.0")
+    set(CURL_INCLUDE_DIR "C:/curl-8.10.1_7-win64-mingw/include")
+    set(CURL_LIBRARY "C:/curl-8.10.1_7-win64-mingw/lib/libcurl.dll.a")
+    set(Vulkan_INCLUDE_DIRS "C:/VulkanSDK/1.3.296.0/include")
+    set(Vulkan_LIBRARIES "C:/VulkanSDK/1.3.296.0/lib/vulkan-1.lib")
+
+    # GUI mode for Windows
+    add_executable(MyProject WIN32
+        main.cpp
+        src/MainWindow.cpp
+        src/DownloadThread.cpp
+        header/MainWindow.h
+        header/DownloadThread.h
+    )
+elseif(APPLE)
+    # macOS-specific settings
+    set(CMAKE_PREFIX_PATH "/usr/local/opt/qt6")
+    find_package(Vulkan REQUIRED) # macOS may require MoltenVK for Vulkan
+
+    # GUI mode for macOS
+    add_executable(MyProject
+        main.cpp
+        src/MainWindow.cpp
+        src/DownloadThread.cpp
+        header/MainWindow.h
+        header/DownloadThread.h
+    )
+else()
+    # Linux-specific settings
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(VULKAN REQUIRED vulkan)
+
+    add_executable(MyProject
+        main.cpp
+        src/MainWindow.cpp
+        src/DownloadThread.cpp
+        header/MainWindow.h
+        header/DownloadThread.h
+    )
+endif()
+
+# Find Qt6 components
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets Concurrent Network)
 if (NOT Qt6_FOUND)
     message(FATAL_ERROR "Qt6 not found!")
 endif()
 
-# Find Vulkan
-find_package(Vulkan REQUIRED)
-if(NOT Vulkan_FOUND)
-    message(FATAL_ERROR "Vulkan not found!")
-else()
-    message(STATUS "Vulkan found: ${Vulkan_INCLUDE_DIRS}")
-    set(Vulkan_INCLUDE_DIRS "C:/VulkanSDK/1.3.296.0/include")
-    set(Vulkan_LIBRARIES "C:/VulkanSDK/1.3.296.0/lib/vulkan-1.lib")
+# Find cURL
+find_package(CURL REQUIRED)
+if(NOT CURL_FOUND)
+    message(FATAL_ERROR "cURL not found!")
 endif()
 
 # Enable Qt's auto-moc, auto-rcc, and auto-uic features
@@ -41,22 +78,27 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/forms)
 
 # Include directories
-include_directories(include)
+include_directories(include ${CURL_INCLUDE_DIR} ${Vulkan_INCLUDE_DIRS})
 
-# Define executable target
-add_executable(MyProject 
-    main.cpp
-    # Src
-    src/MainWindow.cpp
-    # include
+# Explicitly list the files that need moc
+qt6_wrap_cpp(MOC_SOURCES
     header/MainWindow.h
+    header/DownloadThread.h
 )
 
-# Link against the Qt libraries
-target_link_libraries(MyProject Qt6::Core Qt6::Widgets ${Vulkan_LIBRARIES})
+target_sources(MyProject PRIVATE
+    ${MOC_SOURCES}
+)
 
-# Link Vulkan include directories
-target_include_directories(MyProject PRIVATE ${Vulkan_INCLUDE_DIRS})
+# Link libraries
+target_link_libraries(MyProject Qt6::Core Qt6::Widgets Qt6::Concurrent Qt6::Network ${Vulkan_LIBRARIES} ${CURL_LIBRARY})
+
+# Copy MainWindow.json to the output directory
+add_custom_command(TARGET MyProject POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/src/MainWindow.json"
+    $<TARGET_FILE_DIR:MyProject>
+)
 
 # Configure different flags for Release and Debug
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
