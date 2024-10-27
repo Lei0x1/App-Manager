@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "qpushbutton": "cpp",
-        "qvboxlayout": "cpp"
-    }
+        "qvboxlayout": "cpp",
+        "qstandardpaths": "cpp",
+        "qstring": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "C:\\Qt\\Tools\\mingw1310_64\\bin\\g++.exe"
 }
