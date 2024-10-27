@@ -1,0 +1,15 @@
+{
+    "applications": [
+      {
+        "name": "App1",
+        "defaultUrl": "https://example.com/app1/download",
+        "outputFileName": "App1.exe"
+      },
+      {
+        "name": "App2",
+        "defaultUrl": "https://example.com/app2/download",
+        "outputFileName": "App2.exe"
+      }
+    ]
+  }
+  
