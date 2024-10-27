@@ -1,7 +1,11 @@
+![Windows](https://img.shields.io/badge/Windows-Supported-brightgreen) ![macOS](https://img.shields.io/badge/macOS-Development-red) ![Linux](https://img.shields.io/badge/Linux-Development-red) ![GitHub License](https://img.shields.io/github/license/Lei0x1/App-Manager) ![Version](https://img.shields.io/badge/version-0.1.0--alpha-brightgreen)
+
 # App-Manager
 
 App Manager is a powerful desktop application designed to simplify software management. With App Manager, users can effortlessly download and configure software tailored to their specific preferences, enabling them to create a personalized software environment that enhances productivity.
 
+## 📅 Version
+**Current Version**: 0.1.0-alpha
 
 ## ✨ Features
 
@@ -29,6 +33,18 @@ For detailed instructions, troubleshooting tips, and FAQs, check out the [Docume
 ### 🛠️ Configuration
 
 To customize your software management experience, App Manager supports both manual and JSON configuration. For detailed steps on how to configure applications manually or using JSON, please refer to the [Configuration Documentation](/docs/Configuration.md).
+
+## ✅ Prerequisites
+
+- **Operating System**: Ensure your system meets the required specifications for running the App Manager.
+- **Dependencies**: Check for any necessary dependencies required for the application to function smoothly.
+
+## 🐞 Troubleshooting
+
+If you encounter issues while using App Manager, please refer to the following:
+- Check the [FAQ](/docs/FAQ.md) for common questions and solutions.
+- Review the [Documentation](/docs/Documentation.md) for detailed guidance.
+- For unresolved issues, feel free to open an issue on our GitHub page.
 
 ## 💡 Contributing
 We welcome contributions from the community! If you have suggestions, improvements, or want to report issues, feel free to reach out or submit a pull request. Here are some ways you can contribute:
