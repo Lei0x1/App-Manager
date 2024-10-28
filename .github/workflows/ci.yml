@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y libvulkan-dev && sudo apt-get install -y vulkan-tools && sudo apt-get install -y qt6-base-dev && sudo apt-get install -y libgl1-mesa-dev libcurl4-openssl-dev
+        run: sudo apt-get update && sudo apt-get install -y libvulkan-dev && sudo apt-get install -y vulkan-tools && sudo apt-get install -y qt6-base-dev && sudo apt-get install -y libgl1-mesa-dev libcurl4-openssl-dev libxkbcommon-dev
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
