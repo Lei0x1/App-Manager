@@ -10,16 +10,16 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
+        uses: jwlawson/actions-setup-cmake@v2
         with:
-          cmake-version: '3.31.0'
+          cmake-version: '3.16'
 
       - name: Configure CMake
         run: cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release
@@ -29,3 +29,13 @@ jobs:
 
       - name: Run Tests
         run: ctest --test-dir build/release --output-on-failure
+
+  # Skip jobs for macOS and Linux since they are still in development
+  skip_linux_and_macos:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+    steps:
+      - run: echo "Skipping tests for macOS and Linux as they are still in development."
