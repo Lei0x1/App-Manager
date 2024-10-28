@@ -17,9 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libvulkan-dev vulkan-utils
+        run: sudo apt-get update && sudo apt-get install -y libvulkan-dev vulkan-tools
 
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v2
@@ -35,8 +33,9 @@ jobs:
       - name: Run Tests
         run: ctest --test-dir build/release --output-on-failure
 
+  # Skip jobs for macOS and Linux since they are still in development
   skip_linux_and_macos:
-    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
